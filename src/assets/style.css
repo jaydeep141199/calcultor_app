@@ -50,7 +50,7 @@
     flex-direction: row;
   }
   .numeric{
-    padding-top: 5vh;
+    padding-top: 2vh;
     display: grid;
     grid-template-columns: auto auto auto auto;
   }

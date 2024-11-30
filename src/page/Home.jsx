@@ -1,6 +1,5 @@
-
 import React, { useState } from "react";
-import { IconBackspace } from "@tabler/icons-react";
+import { IconBackspace, IconTrash } from "@tabler/icons-react";
 import "../assets/style.css";
 
 const Home = () => {
@@ -9,7 +8,7 @@ const Home = () => {
   const [result, setResult] = useState(0);
   const [memories, setMemories] = useState([]);
   const [history, setHistory] = useState([]);
-  const [view, setView] = useState("history");
+  const [view, setView] = useState("");
 
   const handleAppend = (value) => {
     setQuery((prev) => prev + value);
@@ -18,7 +17,7 @@ const Home = () => {
   const handleresult = () => {
     const data = query.split("");
     let acc = parseInt(data[0], 10);
-    
+
     for (let index = 1; index < data.length; index++) {
       const num = data[index];
       if (num === "+" || num === "-" || num === "*" || num === "/") {
@@ -63,76 +62,133 @@ const Home = () => {
     setMemories([]);
   };
 
-  // Toggle between history and memory view
-  const toggleView = () => {
-    setView(view === "history" ? "memory" : "history");
+  const addmmeory = () => {
+    setMemories((prevmemo) => [...prevmemo, { result }]);
   };
-
   return (
     <>
       <div className="maincalculater">
         <div className="display">
-          <div>
-            {/* <button onClick={toggleView}>Toggle</button> */}
-            
-          </div>
+          <div></div>
           <div>{query || 0}</div>
-          
         </div>
-        {result !== 0 && <div>Result :-{result}</div>}
-        {/* {view === "history" ? (
+
+        {result !== 0 && <div>Result :- {result}</div>}
+        <button value="history" onClick={() => setView("history")}>
+          history
+        </button>
+        <button value="memory" onClick={() => setView("memory")}>
+          memory
+        </button>
+
+        {view === "history" || view === "memory" ? (
+          (() => {
+            const value = view === "history" ? history : memories;
+            return (
               <div>
-                {history.map((entry, index) => (
-                  <div key={index}>
-                    {entry.query} = {entry.result}
+                {value.length > 0 ? (
+                  value.map((entry, index) => (
+                    <div key={index}>
+                      {entry.query} = {entry.result}
+                    </div>
+                  ))
+                ) : (
+                  <div>
+                    {view === "history"
+                      ? "No history yet"
+                      : "No memory saved yet"}
                   </div>
-                ))}
+                )}
+                <IconTrash
+                  onClick={() =>
+                    view === "history" ? setHistory([]) : clearAllMemory()
+                  }
+                />
               </div>
+            );
+          })()
+        ) : (
+          <div className="numeric">
+            <button className="memory_buttons" onClick={clearAllMemory}>
+              MC
+            </button>
+            <button className="memory_buttons"></button>
+            <button className="memory_buttons"></button>
+            <button className="memory_buttons"></button>
+
+            <button className="memory_buttons">MR</button>
+            <button className="memory_buttons">M+</button>
+            <button className="memory_buttons">M-</button>
+            <button className="memory_buttons" onClick={() => addmmeory()}>
+              MS
+            </button>
+            {query.match(operators)?.length !== 0 ? (
+              <button className="buttons" onClick={handleClearEnd}>
+                CE
+              </button>
             ) : (
-              <div>
-                {memories.map((memory, index) => (
-                  <div key={index}>
-                    Memory {index + 1}: {memory}
-                  </div>
-                ))}
-              </div>
-            )} */}
-        <div className="numeric">
-          <button className="memory_buttons" onClick={clearAllMemory}>MC</button>
-          <button className="memory_buttons"></button>
-          <button className="memory_buttons"></button>
-          <button className="memory_buttons"></button>
+              <button className="buttons" disabled>
+                CE
+              </button>
+            )}
+            <button className="buttons" onClick={handleClearAll}>
+              C
+            </button>
+            <button className="buttons" onClick={handleBackspace}>
+              <IconBackspace />
+            </button>
+            <button className="buttons" onClick={() => handleAppend("/")}>
+              /
+            </button>
+            <button className="buttons" onClick={() => handleAppend("7")}>
+              7
+            </button>
+            <button className="buttons" onClick={() => handleAppend("8")}>
+              8
+            </button>
+            <button className="buttons" onClick={() => handleAppend("9")}>
+              9
+            </button>
+            <button className="buttons" onClick={() => handleAppend("*")}>
+              *
+            </button>
+            <button className="buttons" onClick={() => handleAppend("4")}>
+              4
+            </button>
+            <button className="buttons" onClick={() => handleAppend("5")}>
+              5
+            </button>
+            <button className="buttons" onClick={() => handleAppend("6")}>
+              6
+            </button>
+            <button className="buttons" onClick={() => handleAppend("-")}>
+              -
+            </button>
+            <button className="buttons" onClick={() => handleAppend("1")}>
+              1
+            </button>
+            <button className="buttons" onClick={() => handleAppend("2")}>
+              2
+            </button>
+            <button className="buttons" onClick={() => handleAppend("3")}>
+              3
+            </button>
+            <button className="buttons" onClick={() => handleAppend("+")}>
+              +
+            </button>
+            <button className="buttons" disabled></button>
+            <button className="buttons" onClick={() => handleAppend("0")}>
+              0
+            </button>
+            <button className="buttons" onClick={() => handleAppend(".")}>
+              .
+            </button>
 
-          <button className="memory_buttons">MR</button>
-          <button className="memory_buttons">M+</button>
-          <button className="memory_buttons">M-</button>
-          <button className="memory_buttons">MS</button>
-          {query.match(operators)?.length !== 0 ? (
-            <button className="buttons" onClick={handleClearEnd}>CE</button>
-          ) : (
-            <button className="buttons" disabled>CE</button>
-          )}
-          <button className="buttons" onClick={handleClearAll}>C</button>
-          <button className="buttons" onClick={handleBackspace}><IconBackspace /></button>
-          <button className="buttons" onClick={() => handleAppend("/")}>/</button>
-          <button className="buttons" onClick={() => handleAppend("7")}>7</button>
-          <button className="buttons" onClick={() => handleAppend("8")}>8</button>
-          <button className="buttons" onClick={() => handleAppend("9")}>9</button>
-          <button className="buttons" onClick={() => handleAppend("*")}>*</button>
-          <button className="buttons" onClick={() => handleAppend("4")}>4</button>
-          <button className="buttons" onClick={() => handleAppend("5")}>5</button>
-          <button className="buttons" onClick={() => handleAppend("6")}>6</button>
-          <button className="buttons" onClick={() => handleAppend("-")}>-</button>
-          <button className="buttons" onClick={() => handleAppend("1")}>1</button>
-          <button className="buttons" onClick={() => handleAppend("2")}>2</button>
-          <button className="buttons" onClick={() => handleAppend("3")}>3</button>
-          <button className="buttons" onClick={() => handleAppend("+")}>+</button>
-          <button className="buttons" disabled></button>
-          <button className="buttons" onClick={() => handleAppend("0")}>0</button>
-          <button className="buttons" onClick={() => handleAppend(".")}>.</button>
-
-          <button className="buttons equal" onClick={handleresult}>=</button>
-        </div>
+            <button className="buttons equal" onClick={handleresult}>
+              =
+            </button>
+          </div>
+        )}
       </div>
     </>
   );
